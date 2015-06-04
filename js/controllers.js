@@ -8,6 +8,8 @@ var clone;
         return Thingy;
     })();
     var PhoneListCtrl = (function () {
+        // TODO: It appears that you can define your own scope types
+        // TODO: Hmm, some smart ppl say to use 'this'
         function PhoneListCtrl($scope, $filter) {
             this.$scope = $scope;
             this.$filter = $filter;
@@ -37,6 +39,10 @@ var clone;
             }
             this.$scope.searchResults = filterResult;
         };
+        // $inject annotation.
+        // It provides $injector with information about dependencies to be injected into constructor
+        // it is better to have it close to the constructor, because the parameters must match in count and type.
+        // See http://docs.angularjs.org/guide/di
         PhoneListCtrl.$inject = [
             '$scope',
             '$filter'
@@ -45,10 +51,4 @@ var clone;
     })();
     clone.PhoneListCtrl = PhoneListCtrl;
 })(clone || (clone = {}));
-/// <reference path="defs.d.ts" />
-var clone;
-(function (clone) {
-    angular.module("clone", [])
-        .controller('phoneListCtrl', clone.PhoneListCtrl);
-})(clone || (clone = {}));
-//# sourceMappingURL=main.js.map
+//# sourceMappingURL=controllers.js.map
