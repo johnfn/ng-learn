@@ -8,6 +8,6 @@
         "sourceMap": true
     },
     "files": [
-        "js/controllers.ts"
+        "js/defs.d.ts"
     ]
 }

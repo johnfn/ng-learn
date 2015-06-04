@@ -1,8 +1,8 @@
-/// <reference path="../typings/tsd.d.ts" />
+/// <reference path="defs.d.ts" />
 var clone;
 (function (clone) {
-    var PhonecatApp = (function () {
-        function PhonecatApp($scope) {
+    var PhoneListCtrl = (function () {
+        function PhoneListCtrl($scope) {
             this.$scope = $scope;
             $scope.phones = [
                 { 'name': 'Nexus S',
@@ -12,11 +12,17 @@ var clone;
                 { 'name': 'MOTOROLA XOOM™',
                     'snippet': 'The Next, Next Generation tablet.' }];
         }
-        PhonecatApp.$inject = [
+        PhoneListCtrl.$inject = [
             '$scope'
         ];
-        return PhonecatApp;
+        return PhoneListCtrl;
     })();
-    clone.PhonecatApp = PhonecatApp;
+    clone.PhoneListCtrl = PhoneListCtrl;
+})(clone || (clone = {}));
+/// <reference path="defs.d.ts" />
+var clone;
+(function (clone) {
+    angular.module("clone", [])
+        .controller('phoneListCtrl', clone.PhoneListCtrl);
 })(clone || (clone = {}));
 //# sourceMappingURL=main.js.map
