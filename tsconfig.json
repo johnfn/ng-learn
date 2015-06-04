@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "out": "js/main.js",
+        "sourceMap": true
+    },
+    "files": [
+        "js/controllers.ts"
+    ]
+}
