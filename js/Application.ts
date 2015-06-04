@@ -3,5 +3,6 @@
 module clone {
   angular.module("clone", [])
     .controller('phoneListCtrl', PhoneListCtrl)
+    .directive('searchMatchDirective', searchMatchDirective)
   ;
 }

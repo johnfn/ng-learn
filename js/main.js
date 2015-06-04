@@ -48,7 +48,19 @@ var clone;
 /// <reference path="defs.d.ts" />
 var clone;
 (function (clone) {
+    function searchMatchDirective() {
+        return {
+            templateUrl: "templates/search-match.html",
+            restrict: 'E'
+        };
+    }
+    clone.searchMatchDirective = searchMatchDirective;
+})(clone || (clone = {}));
+/// <reference path="defs.d.ts" />
+var clone;
+(function (clone) {
     angular.module("clone", [])
-        .controller('phoneListCtrl', clone.PhoneListCtrl);
+        .controller('phoneListCtrl', clone.PhoneListCtrl)
+        .directive('searchMatchDirective', clone.searchMatchDirective);
 })(clone || (clone = {}));
 //# sourceMappingURL=main.js.map
