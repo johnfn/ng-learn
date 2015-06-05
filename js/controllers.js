@@ -7,6 +7,9 @@ var clone;
         }
         return Thingy;
     })();
+    function PostList($resource) {
+    }
+    clone.PostList = PostList;
     var PhoneListCtrl = (function () {
         // TODO: It appears that you can define your own scope types
         // TODO: Hmm, some smart ppl say to use 'this'

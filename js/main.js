@@ -7,6 +7,9 @@ var clone;
         }
         return Thingy;
     })();
+    function PostList($resource) {
+    }
+    clone.PostList = PostList;
     var PhoneListCtrl = (function () {
         function PhoneListCtrl($scope, $filter) {
             this.$scope = $scope;

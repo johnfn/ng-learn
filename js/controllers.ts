@@ -22,6 +22,10 @@ module clone {
         }
     }
 
+    export function PostList($resource: ng.resource.IResource) {
+
+    }
+
     export class PhoneListCtrl {
         // $inject annotation.
         // It provides $injector with information about dependencies to be injected into constructor
