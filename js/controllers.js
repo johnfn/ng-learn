@@ -7,15 +7,35 @@ var clone;
         }
         return Thingy;
     })();
-    function PostList($resource) {
-    }
-    clone.PostList = PostList;
+    var PostListFactory = (function () {
+        function PostListFactory($http, $q) {
+            this.$http = $http;
+            this.$q = $q;
+        }
+        PostListFactory.prototype.getPosts = function () {
+            var $http = this.$http;
+            var $q = this.$q;
+            var deferred = $q.defer();
+            $http.get("https://hacker-news.firebaseio.com/v0/topstories.json")
+                .success(function (data) {
+                deferred.resolve(data.slice(0, 10));
+            })
+                .error(function (data) {
+                deferred.reject(data);
+            });
+            return deferred.promise;
+        };
+        return PostListFactory;
+    })();
+    clone.PostListFactory = PostListFactory;
     var PhoneListCtrl = (function () {
         // TODO: It appears that you can define your own scope types
         // TODO: Hmm, some smart ppl say to use 'this'
-        function PhoneListCtrl($scope, $filter) {
+        function PhoneListCtrl($scope, $filter, $http, postListFactory) {
             this.$scope = $scope;
             this.$filter = $filter;
+            this.$http = $http;
+            this.postListFactory = postListFactory;
             $scope.vm = this;
             $scope.searchResults = [];
             $scope.phones = [
@@ -23,6 +43,12 @@ var clone;
                 new Thingy("Different test"),
                 new Thingy("Wow, its a new thingy.")
             ];
+            postListFactory
+                .getPosts()
+                .then(function (result) {
+                $scope.data = result;
+                $scope.$broadcast("ids-loaded");
+            });
         }
         PhoneListCtrl.prototype.resetList = function () {
             var list = this.$scope.phones;
@@ -48,7 +74,9 @@ var clone;
         // See http://docs.angularjs.org/guide/di
         PhoneListCtrl.$inject = [
             '$scope',
-            '$filter'
+            '$filter',
+            '$http',
+            'postList'
         ];
         return PhoneListCtrl;
     })();

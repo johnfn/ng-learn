@@ -7,6 +7,8 @@ module clone {
         vm: PhoneListCtrl;
         query: string;
         searchResults: Thingy[];
+        data: number[];
+        debug: string;
     }
 
     class Thingy {
@@ -22,8 +24,25 @@ module clone {
         }
     }
 
-    export function PostList($resource: ng.resource.IResource) {
+    export class PostListFactory {
+        constructor(private $http: ng.IHttpService, private $q: ng.IQService) { }
 
+        getPosts(): ng.IPromise<number[]> {
+            var $http = this.$http;
+            var $q = this.$q;
+
+            var deferred = $q.defer();
+
+            $http.get("https://hacker-news.firebaseio.com/v0/topstories.json")
+                .success((data: number[]) => {
+                    deferred.resolve(data.slice(0, 10));
+                })
+                .error((data: string) => {
+                    deferred.reject(data);
+                });
+
+            return deferred.promise;
+        }
     }
 
     export class PhoneListCtrl {
@@ -33,12 +52,19 @@ module clone {
         // See http://docs.angularjs.org/guide/di
         public static $inject = [
             '$scope',
-            '$filter'
+            '$filter',
+            '$http',
+            'postList'
         ];
 
         // TODO: It appears that you can define your own scope types
         // TODO: Hmm, some smart ppl say to use 'this'
-        constructor(private $scope: ITest, private $filter: ng.IFilterService) {
+        constructor(
+            private $scope: ITest,
+            private $filter: ng.IFilterService,
+            private $http: ng.IHttpService,
+            private postListFactory: PostListFactory) {
+
             $scope.vm = this;
 
             $scope.searchResults = [];
@@ -47,6 +73,14 @@ module clone {
                 new Thingy("Different test"),
                 new Thingy("Wow, its a new thingy.")
             ];
+
+            postListFactory
+                .getPosts()
+                .then((result: number[]) => {
+                    $scope.data = result;
+
+                    $scope.$broadcast("ids-loaded");
+                });
         }
 
         resetList() {
