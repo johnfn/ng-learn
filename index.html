@@ -7,27 +7,16 @@
     <link rel="stylesheet" href="css/app.css">
 
     <script src="bower_components/angularjs/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
 
     <script src="js/main.js"></script>
   </head>
 
   <body ng-controller="phoneListCtrl">
-    Search: <input ng-model="query" ng-change="vm.updateQuery(query)" />
 
-    <ul>
-      <li ng-repeat="thingy in searchResults">
-         <search-match-directive></search-match-directive>
-      </li>
-    </ul>
-
-    <p>
-      {{ data }}
-    </p>
-
-    <p>
-        {{ debug }}
-    </p>
-
-    <p>Total number of phones: {{ phones.length }}</p>
+    <div ng-repeat="post in posts">
+        <a ng-href="#/{{ post.id }}"> {{ post.score}} {{ post.title }} </a>
+        <div> by {{ post.by }} </div>
+    </div>
   </body>
 </html>

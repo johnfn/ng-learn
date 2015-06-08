@@ -1,12 +1,6 @@
 /// <reference path="defs.d.ts" />
 var clone;
 (function (clone) {
-    var Thingy = (function () {
-        function Thingy(name) {
-            this.name = name;
-        }
-        return Thingy;
-    })();
     var PostListService = (function () {
         function PostListService($http, $q) {
             this.$http = $http;
@@ -18,7 +12,7 @@ var clone;
             var deferred = $q.defer();
             $http.get("https://hacker-news.firebaseio.com/v0/topstories.json")
                 .success(function (data) {
-                deferred.resolve(data.slice(0, 10));
+                deferred.resolve(data.slice(0, 20));
             })
                 .error(function (data) {
                 deferred.reject(data);
@@ -33,15 +27,15 @@ var clone;
             this.$http = $http;
             this.$q = $q;
         }
-        IndividualPostService.prototype.getPost = function () {
+        IndividualPostService.prototype.getPost = function (id) {
             var $http = this.$http;
             var $q = this.$q;
             var deferred = $q.defer();
-            $http.get("https://hacker-news.firebaseio.com/v0/item/9680982.json")
+            $http.get("https://hacker-news.firebaseio.com/v0/item/" + id + ".json")
                 .success(function (data) {
+                deferred.resolve(data);
             })
                 .error(function (errorMessage) {
-                console.log(errorMessage);
                 deferred.reject(errorMessage);
             });
             return deferred.promise;
@@ -51,44 +45,36 @@ var clone;
     clone.IndividualPostService = IndividualPostService;
     var PhoneListCtrl = (function () {
         function PhoneListCtrl($scope, $filter, postListService, individualPostService) {
+            var _this = this;
             this.$scope = $scope;
             this.$filter = $filter;
             this.postListService = postListService;
             this.individualPostService = individualPostService;
             $scope.vm = this;
-            $scope.searchResults = [];
-            $scope.phones = [
-                new Thingy("Test one"),
-                new Thingy("Different test"),
-                new Thingy("Wow, its a new thingy.")
-            ];
+            $scope.posts = [];
             postListService
                 .getPosts()
-                .then(this.loadPosts);
+                .then(function (ids) { return _this.loadPosts(ids); });
         }
         PhoneListCtrl.prototype.loadPosts = function (ids) {
-            console.log(ids);
-        };
-        PhoneListCtrl.prototype.resetList = function () {
-            var list = this.$scope.phones;
-            for (var i = 0; i < list.length; i++) {
-                list[i].isPartOfSearch = false;
-            }
-        };
-        PhoneListCtrl.prototype.updateQuery = function (newQuery) {
-            var filterResult = this.$filter('filter')(this.$scope.phones, this.$scope.query);
-            newQuery = newQuery.toUpperCase();
-            for (var i = 0; i < filterResult.length; i++) {
-                var startIndex = filterResult[i].name.toUpperCase().indexOf(newQuery);
-                var name = filterResult[i].name;
-                filterResult[i].beforeMatch = name.substr(0, startIndex);
-                filterResult[i].match = name.substr(startIndex, newQuery.length);
-                filterResult[i].afterMatch = name.substr(startIndex + newQuery.length);
-            }
-            this.$scope.searchResults = filterResult;
+            var _this = this;
+            ids.map(function (id, i) {
+                _this.individualPostService
+                    .getPost(id)
+                    .then(function (post) {
+                    _this.$scope.posts[i] = post;
+                });
+            });
         };
         return PhoneListCtrl;
     })();
     clone.PhoneListCtrl = PhoneListCtrl;
+    var PostDetailController = (function () {
+        function PostDetailController($scope) {
+            this.$scope = $scope;
+        }
+        return PostDetailController;
+    })();
+    clone.PostDetailController = PostDetailController;
 })(clone || (clone = {}));
 //# sourceMappingURL=controllers.js.map
