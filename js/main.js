@@ -7,12 +7,12 @@ var clone;
         }
         return Thingy;
     })();
-    var PostListFactory = (function () {
-        function PostListFactory($http, $q) {
+    var PostListService = (function () {
+        function PostListService($http, $q) {
             this.$http = $http;
             this.$q = $q;
         }
-        PostListFactory.prototype.getPosts = function () {
+        PostListService.prototype.getPosts = function () {
             var $http = this.$http;
             var $q = this.$q;
             var deferred = $q.defer();
@@ -25,15 +25,36 @@ var clone;
             });
             return deferred.promise;
         };
-        return PostListFactory;
+        return PostListService;
     })();
-    clone.PostListFactory = PostListFactory;
+    clone.PostListService = PostListService;
+    var IndividualPostService = (function () {
+        function IndividualPostService($http, $q) {
+            this.$http = $http;
+            this.$q = $q;
+        }
+        IndividualPostService.prototype.getPost = function () {
+            var $http = this.$http;
+            var $q = this.$q;
+            var deferred = $q.defer();
+            $http.get("https://hacker-news.firebaseio.com/v0/item/9680982.json")
+                .success(function (data) {
+            })
+                .error(function (errorMessage) {
+                console.log(errorMessage);
+                deferred.reject(errorMessage);
+            });
+            return deferred.promise;
+        };
+        return IndividualPostService;
+    })();
+    clone.IndividualPostService = IndividualPostService;
     var PhoneListCtrl = (function () {
-        function PhoneListCtrl($scope, $filter, $http, postListFactory) {
+        function PhoneListCtrl($scope, $filter, postListService, individualPostService) {
             this.$scope = $scope;
             this.$filter = $filter;
-            this.$http = $http;
-            this.postListFactory = postListFactory;
+            this.postListService = postListService;
+            this.individualPostService = individualPostService;
             $scope.vm = this;
             $scope.searchResults = [];
             $scope.phones = [
@@ -41,13 +62,13 @@ var clone;
                 new Thingy("Different test"),
                 new Thingy("Wow, its a new thingy.")
             ];
-            postListFactory
+            postListService
                 .getPosts()
-                .then(function (result) {
-                $scope.data = result;
-                $scope.$broadcast("ids-loaded");
-            });
+                .then(this.loadPosts);
         }
+        PhoneListCtrl.prototype.loadPosts = function (ids) {
+            console.log(ids);
+        };
         PhoneListCtrl.prototype.resetList = function () {
             var list = this.$scope.phones;
             for (var i = 0; i < list.length; i++) {
@@ -66,12 +87,6 @@ var clone;
             }
             this.$scope.searchResults = filterResult;
         };
-        PhoneListCtrl.$inject = [
-            '$scope',
-            '$filter',
-            '$http',
-            'postList'
-        ];
         return PhoneListCtrl;
     })();
     clone.PhoneListCtrl = PhoneListCtrl;
@@ -93,6 +108,7 @@ var clone;
     angular.module("clone", [])
         .controller('phoneListCtrl', clone.PhoneListCtrl)
         .directive('searchMatchDirective', clone.searchMatchDirective)
-        .service('postList', clone.PostListFactory);
+        .service('postListService', clone.PostListService)
+        .service('individualPostService', clone.IndividualPostService);
 })(clone || (clone = {}));
 //# sourceMappingURL=main.js.map

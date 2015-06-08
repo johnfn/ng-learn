@@ -24,7 +24,7 @@ module clone {
         }
     }
 
-    export class PostListFactory {
+    export class PostListService {
         constructor(private $http: ng.IHttpService, private $q: ng.IQService) { }
 
         getPosts(): ng.IPromise<number[]> {
@@ -45,25 +45,48 @@ module clone {
         }
     }
 
-    export class PhoneListCtrl {
-        // $inject annotation.
-        // It provides $injector with information about dependencies to be injected into constructor
-        // it is better to have it close to the constructor, because the parameters must match in count and type.
-        // See http://docs.angularjs.org/guide/di
-        public static $inject = [
-            '$scope',
-            '$filter',
-            '$http',
-            'postList'
-        ];
+    interface HNPost {
+        by: string;
+        descendants: number;
+        id: number;
+        kids: number[];
+        score: number;
+        text: string;
+        time: number;
+        title: string;
+        type: string;
+        url: string;
+    }
 
-        // TODO: It appears that you can define your own scope types
-        // TODO: Hmm, some smart ppl say to use 'this'
+    export class IndividualPostService {
+        constructor(private $http: ng.IHttpService, private $q: ng.IQService) { }
+
+        getPost(): ng.IPromise<HNPost> {
+            var $http = this.$http;
+            var $q = this.$q;
+
+            var deferred = $q.defer();
+
+            $http.get("https://hacker-news.firebaseio.com/v0/item/9680982.json")
+                .success((data: HNPost) => {
+
+                })
+                .error((errorMessage: string) => {
+                    console.log(errorMessage);
+
+                    deferred.reject(errorMessage);
+                });
+
+            return deferred.promise;
+        }
+    }
+
+    export class PhoneListCtrl {
         constructor(
             private $scope: ITest,
             private $filter: ng.IFilterService,
-            private $http: ng.IHttpService,
-            private postListFactory: PostListFactory) {
+            private postListService: PostListService,
+            private individualPostService: IndividualPostService) {
 
             $scope.vm = this;
 
@@ -74,13 +97,13 @@ module clone {
                 new Thingy("Wow, its a new thingy.")
             ];
 
-            postListFactory
+            postListService
                 .getPosts()
-                .then((result: number[]) => {
-                    $scope.data = result;
+                .then(this.loadPosts);
+        }
 
-                    $scope.$broadcast("ids-loaded");
-                });
+        loadPosts(ids: number[]) {
+            console.log(ids);
         }
 
         resetList() {
