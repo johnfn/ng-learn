@@ -94,11 +94,15 @@ module clone {
         }
     }
 
+    interface IPostDetailScope extends ng.IScope {
+        test: string;
+    }
+
     export class PostDetailController {
         constructor(
-            private $scope: ng.IScope
+            private $scope: IPostDetailScope
         ) {
-
+            $scope.test = "testing.";
         }
     }
 }

@@ -72,6 +72,7 @@ var clone;
     var PostDetailController = (function () {
         function PostDetailController($scope) {
             this.$scope = $scope;
+            $scope.test = "testing.";
         }
         return PostDetailController;
     })();
@@ -93,6 +94,7 @@ var clone;
 (function (clone) {
     angular.module("clone", ["ngRoute"])
         .controller('phoneListCtrl', clone.PhoneListCtrl)
+        .controller('postDetailController', clone.PostDetailController)
         .directive('searchMatchDirective', clone.searchMatchDirective)
         .service('postListService', clone.PostListService)
         .service('individualPostService', clone.IndividualPostService)
@@ -100,10 +102,10 @@ var clone;
         $routeProvider
             .when("/:id", {
             templateUrl: "partials/post-detail.html",
-            controller: "PostDetailController"
+            controller: "postDetailController"
         })
             .when("/", {
-            templateUrl: "index.html",
+            templateUrl: "partials/main.html",
             controller: "phoneListCtrl"
         });
     });

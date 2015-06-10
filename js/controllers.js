@@ -72,6 +72,7 @@ var clone;
     var PostDetailController = (function () {
         function PostDetailController($scope) {
             this.$scope = $scope;
+            $scope.test = "testing.";
         }
         return PostDetailController;
     })();
