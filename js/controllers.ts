@@ -95,14 +95,19 @@ module clone {
     }
 
     interface IPostDetailScope extends ng.IScope {
-        test: string;
+        test: number;
+    }
+
+    interface IPostDetailRouteParams extends ng.route.IRouteParamsService {
+        id: number;
     }
 
     export class PostDetailController {
         constructor(
-            private $scope: IPostDetailScope
+            private $scope: IPostDetailScope,
+            private $routeParams: IPostDetailRouteParams
         ) {
-            $scope.test = "testing.";
+            $scope.test = $routeParams.id;
         }
     }
 }

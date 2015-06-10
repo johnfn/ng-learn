@@ -70,9 +70,10 @@ var clone;
     })();
     clone.PhoneListCtrl = PhoneListCtrl;
     var PostDetailController = (function () {
-        function PostDetailController($scope) {
+        function PostDetailController($scope, $routeParams) {
             this.$scope = $scope;
-            $scope.test = "testing.";
+            this.$routeParams = $routeParams;
+            $scope.test = $routeParams.id;
         }
         return PostDetailController;
     })();
